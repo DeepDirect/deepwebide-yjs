@@ -11,6 +11,12 @@ const loadConfig = (): ServerConfig => {
     return process.env[key] || defaultValue;
   };
 
+  const getEnvBoolean = (key: string, defaultValue: boolean): boolean => {
+    const value = process.env[key];
+    if (value === undefined) return defaultValue;
+    return value.toLowerCase() === 'true';
+  };
+
   return {
     port: getEnvNumber('PORT', 1234),
     nodeEnv: getEnvString('NODE_ENV', 'development'),
@@ -21,6 +27,10 @@ const loadConfig = (): ServerConfig => {
     logLevel: getEnvString('LOG_LEVEL', 'info'),
     logFormat: getEnvString('LOG_FORMAT', 'combined'),
     cleanupInterval: getEnvNumber('CLEANUP_INTERVAL', 300000),
+    // 코드 에디터 기능 추가
+    apiBaseUrl: getEnvString('API_BASE_URL', 'http://localhost:3000/api'),
+    gracePeriodMs: getEnvNumber('GRACE_PERIOD_MS', 120000), // 기본 2분
+    enableCodeEditorFeatures: getEnvBoolean('ENABLE_CODE_EDITOR_FEATURES', true),
   };
 };
 
@@ -40,11 +50,24 @@ const validateConfig = (config: ServerConfig): void => {
     );
   }
 
+  if (config.gracePeriodMs && config.gracePeriodMs < 5000) {
+    throw new Error(`Invalid gracePeriodMs: ${config.gracePeriodMs}. Must be at least 5000ms.`);
+  }
+
   const validLogLevels = ['error', 'warn', 'info', 'debug'];
   if (!validLogLevels.includes(config.logLevel)) {
     throw new Error(
       `Invalid logLevel: ${config.logLevel}. Must be one of: ${validLogLevels.join(', ')}`,
     );
+  }
+
+  // API URL 형식 검증 (코드 에디터 기능이 활성화된 경우)
+  if (config.enableCodeEditorFeatures && config.apiBaseUrl) {
+    try {
+      new URL(config.apiBaseUrl);
+    } catch {
+      throw new Error(`Invalid apiBaseUrl: ${config.apiBaseUrl}. Must be a valid URL.`);
+    }
   }
 };
 
@@ -65,4 +88,7 @@ export const getConfigSummary = (): Record<string, unknown> => ({
   maxClientsPerRoom: config.maxClientsPerRoom,
   websocketPingInterval: config.websocketPingInterval,
   logLevel: config.logLevel,
+  enableCodeEditorFeatures: config.enableCodeEditorFeatures,
+  gracePeriodMs: config.gracePeriodMs,
+  apiBaseUrl: config.apiBaseUrl ? '[CONFIGURED]' : '[NOT_SET]',
 });

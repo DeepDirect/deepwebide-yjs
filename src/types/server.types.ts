@@ -1,6 +1,5 @@
 import type { WebSocket } from 'ws';
 
-// 서버 설정 타입
 export interface ServerConfig {
   port: number;
   nodeEnv: string;
@@ -11,17 +10,23 @@ export interface ServerConfig {
   logLevel: string;
   logFormat: string;
   cleanupInterval: number;
+  apiBaseUrl?: string;
+  gracePeriodMs?: number;
+  enableCodeEditorFeatures?: boolean;
 }
 
-// WebSocket 클라이언트 확장 타입
 export interface ExtendedWebSocket extends WebSocket {
   roomId?: string;
   clientId?: string;
   userId?: string;
   isAlive?: boolean;
+  connectedAt?: Date;
+  lastActivity?: Date;
+  socket?: {
+    remoteAddress?: string;
+  };
 }
 
-// 방(Room) 정보 타입
 export interface RoomInfo {
   id: string;
   clients: Set<ExtendedWebSocket>;
@@ -29,7 +34,6 @@ export interface RoomInfo {
   lastActivity: Date;
 }
 
-// 서버 상태 타입
 export interface ServerStatus {
   totalRooms: number;
   totalClients: number;
@@ -37,10 +41,8 @@ export interface ServerStatus {
   memoryUsage: NodeJS.MemoryUsage;
 }
 
-// 로그 레벨 타입
 export type LogLevel = 'error' | 'warn' | 'info' | 'debug';
 
-// 에러 타입
 export interface ServerError extends Error {
   code?: string;
   statusCode?: number;
@@ -48,7 +50,6 @@ export interface ServerError extends Error {
   clientId?: string;
 }
 
-// 이벤트 타입
 export interface ConnectionEvent {
   type: 'connect' | 'disconnect' | 'message' | 'error';
   roomId: string;
@@ -57,14 +58,12 @@ export interface ConnectionEvent {
   data?: unknown;
 }
 
-// 메시지 타입
 export interface WebSocketMessage {
   type: string;
   data: unknown;
   timestamp?: number;
 }
 
-// 헬스체크 응답 타입
 export interface HealthCheckResponse {
   status: 'healthy' | 'unhealthy';
   timestamp: string;
@@ -72,4 +71,27 @@ export interface HealthCheckResponse {
   version: string;
   rooms: number;
   clients: number;
+}
+
+export interface CodeEditorRoomInfo {
+  roomId: string;
+  repositoryId: number;
+  filePath: string;
+  clientCount: number;
+  hasGracePeriod: boolean;
+  lastSaved?: Date;
+  contentLength: number;
+}
+
+export interface SaveApiRequest {
+  filePath: string;
+  content: string;
+  source: 'yjs-collaboration';
+}
+
+export interface SaveApiResponse {
+  success: boolean;
+  message: string;
+  fileId?: number;
+  savedAt: string;
 }

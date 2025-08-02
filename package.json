@@ -19,7 +19,8 @@
     "yjs",
     "collaboration",
     "websocket",
-    "real-time"
+    "real-time",
+    "code-editor"
   ],
   "author": "Your Name",
   "license": "MIT",
