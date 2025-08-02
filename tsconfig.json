@@ -34,7 +34,10 @@
       "@/types/*": ["types/*"],
       "@/utils/*": ["utils/*"],
       "@/middleware/*": ["middleware/*"]
-    }
+    },
+    "plugins": [
+      { "transform": "ts-transformer-paths" }
+    ]
   },
   "include": [
     "src/**/*"

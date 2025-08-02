@@ -5,7 +5,7 @@
   "main": "dist/server.js",
   "scripts": {
     "dev": "tsx watch src/server.ts",
-    "build": "tsc",
+    "build": "ttsc",
     "start": "node dist/server.js",
     "lint": "eslint src --ext .ts --fix",
     "lint:check": "eslint src --ext .ts",
@@ -39,7 +39,9 @@
     "eslint-config-prettier": "^10.1.5",
     "eslint-plugin-prettier": "^5.5.1",
     "prettier": "^3.6.2",
+    "ts-transformer-paths": "1.0.0-alpha.1",
     "tsx": "^4.19.2",
+    "ttypescript": "^1.5.15",
     "typescript": "~5.8.3"
   },
   "engines": {
