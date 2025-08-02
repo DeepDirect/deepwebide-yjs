@@ -9,10 +9,10 @@ import type { ExtendedWebSocket, ServerError } from '@/types/server.types';
 
 const roomManager = new RoomManager();
 const connectionTracker = new Map<string, Map<string, number>>();
-const MAX_CONNECTIONS_PER_IP_PER_ROOM = 5;
+const MAX_CONNECTIONS_PER_IP_PER_ROOM = 10;
 
 const isCodeEditorRoom = (roomId: string): boolean => {
-  return /^repo-\d+-.+$/.test(roomId);
+  return /^repo-\d+(-.*)?$/.test(roomId);
 };
 
 const isFileTreeRoom = (roomId: string): boolean => {
@@ -132,7 +132,7 @@ const handleClientConnection = (ws: ExtendedWebSocket, request: IncomingMessage)
       return;
     }
 
-    const currentClientCount = roomManager.getClientCount(roomId);
+    const currentClientCount = roomManager.getActiveClientCount(roomId);
     if (currentClientCount >= config.maxClientsPerRoom) {
       logger.warn(
         `방 클라이언트 제한 초과: ${roomId} (${currentClientCount}/${config.maxClientsPerRoom})`,

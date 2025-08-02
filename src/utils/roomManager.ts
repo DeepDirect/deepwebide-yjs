@@ -230,7 +230,7 @@ export class RoomManager {
     return this.getActiveClientCount(roomId);
   }
 
-  private getActiveClientCount(roomId: string): number {
+  getActiveClientCount(roomId: string): number {
     const room = this.rooms.get(roomId);
     if (!room) return 0;
 
