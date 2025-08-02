@@ -250,7 +250,7 @@ const handleClientMessage = (ws: ExtendedWebSocket, message: Buffer): void => {
   }
 };
 
-const handleClientDisconnection = (ws: ExtendedWebSocket, code: number, reason: Buffer): void => {
+const handleClientDisconnection = (ws: ExtendedWebSocket, code: number, _reason: Buffer): void => {
   try {
     const { roomId, clientId } = ws;
     if (!roomId || !clientId) return;

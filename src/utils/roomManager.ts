@@ -6,14 +6,11 @@ import { YjsDocumentManager } from '@/utils/yjsDocumentManager';
 export class RoomManager {
   private rooms: Map<string, RoomInfo> = new Map();
   private gracePeriods: Map<string, NodeJS.Timeout> = new Map();
-  private saveManager: SaveManager;
   private yjsManager: YjsDocumentManager;
-  private gracePeriodMs: number;
+  private gracePeriodMs: number = 30000; // 30 seconds default, adjust as needed
 
   constructor() {
-    this.saveManager = new SaveManager();
     this.yjsManager = new YjsDocumentManager();
-    this.gracePeriodMs = parseInt(process.env.GRACE_PERIOD_MS || '120000', 10);
   }
 
   addClient(roomId: string, client: ExtendedWebSocket): number {
@@ -227,7 +224,7 @@ export class RoomManager {
   cleanupEmptyRooms(): number {
     let cleanedCount = 0;
 
-    this.rooms.forEach((room, roomId) => {
+    this.rooms.forEach((_, roomId) => {
       if (this.getActiveClientCount(roomId) === 0 && !this.gracePeriods.has(roomId)) {
         this.cleanupRoom(roomId);
         cleanedCount++;
