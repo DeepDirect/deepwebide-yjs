@@ -148,7 +148,18 @@ export class RoomManager {
     const room = this.rooms.get(roomId);
     if (!room) return 0;
 
-    if (SaveManager.isCodeEditorRoom(roomId)) {
+    // 파일트리 메시지인지 확인
+    let isFileTreeMessage = false;
+    try {
+      const messageText = message.toString('utf8');
+      const parsedMessage = JSON.parse(messageText);
+      isFileTreeMessage = parsedMessage.type === 'fileTree';
+    } catch {
+      // JSON 파싱 실패는 일반 Yjs 메시지
+    }
+
+    // 코드 에디터 방이고 파일트리 메시지가 아닌 경우에만 YJS 처리
+    if (SaveManager.isCodeEditorRoom(roomId) && !isFileTreeMessage) {
       this.yjsManager.handleYjsMessage(roomId, message);
     }
 

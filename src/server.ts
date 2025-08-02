@@ -209,6 +209,33 @@ const handleClientMessage = (ws: ExtendedWebSocket, message: Buffer): void => {
     if (!roomId || !clientId) return;
 
     ws.lastActivity = new Date();
+
+    // 파일트리 메시지인지 확인
+    try {
+      const messageText = message.toString('utf8');
+      const parsedMessage = JSON.parse(messageText);
+
+      // 파일트리 브로드캐스트 메시지 처리
+      if (parsedMessage.type === 'fileTree' && isFileTreeRoom(roomId)) {
+        logger.debug(`파일트리 브로드캐스트: ${roomId}`, {
+          action: parsedMessage.action,
+          fileId: parsedMessage.data?.fileId,
+          fileName: parsedMessage.data?.fileName,
+        });
+
+        // 파일트리 메시지는 모든 클라이언트에게 브로드캐스트
+        const broadcastCount = roomManager.broadcast(roomId, message, ws);
+
+        if (broadcastCount > 0) {
+          logger.debug(`파일트리 메시지 브로드캐스트: ${broadcastCount}명에게 전송`);
+        }
+        return;
+      }
+    } catch (parseError) {
+      // JSON 파싱 실패는 일반적인 Yjs 메시지이므로 기존 로직 계속 진행
+    }
+
+    // 기존 Yjs 메시지 처리
     const broadcastCount = roomManager.broadcast(roomId, message, ws);
 
     if (broadcastCount > 0) {
