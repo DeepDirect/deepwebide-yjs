@@ -19,8 +19,12 @@ const isFileTreeRoom = (roomId: string): boolean => {
   return /^filetree-\d+$/.test(roomId);
 };
 
+const isSavePointRoom = (roomId: string): boolean => {
+  return /^savepoint-\d+$/.test(roomId);
+};
+
 const isAllowedRoom = (roomId: string): boolean => {
-  return isCodeEditorRoom(roomId) || isFileTreeRoom(roomId);
+  return isCodeEditorRoom(roomId) || isFileTreeRoom(roomId) || isSavePointRoom(roomId);
 };
 
 const trackConnection = (clientIP: string, roomId: string): boolean => {

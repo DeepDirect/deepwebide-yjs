@@ -110,9 +110,26 @@ export class SaveManager {
     return pattern.test(roomId);
   }
 
+  static isSavePointRoom(roomId: string): boolean {
+    const pattern = /^savepoint-\d+$/;
+    return pattern.test(roomId);
+  }
+
+  static parseSavePointRoomId(roomId: string): number | null {
+    const match = roomId.match(/^savepoint-(\d+)$/);
+    if (!match) return null;
+
+    const repositoryId = parseInt(match[1], 10);
+    return isNaN(repositoryId) ? null : repositoryId;
+  }
+
   // 🔧 추가: 지원되는 룸인지 확인
   static isSupportedRoom(roomId: string): boolean {
-    return SaveManager.isCodeEditorRoom(roomId) || SaveManager.isFileTreeRoom(roomId);
+    return (
+      SaveManager.isCodeEditorRoom(roomId) ||
+      SaveManager.isFileTreeRoom(roomId) ||
+      SaveManager.isSavePointRoom(roomId)
+    );
   }
 
   // 🔧 추가: 파일 트리 룸에서 repositoryId 추출
