@@ -1,7 +1,7 @@
 import 'dotenv/config';
 import { WebSocketServer } from 'ws';
 import { IncomingMessage } from 'http';
-import config, { getConfigSummary } from '@/config';
+import config, { getConfigSummary } from 'config';
 import logger from '@/utils/logger';
 import { checkPort } from '@/utils/portChecker';
 import { RoomManager } from '@/utils/roomManager';
