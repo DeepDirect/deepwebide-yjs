@@ -23,8 +23,19 @@ const isSavePointRoom = (roomId: string): boolean => {
   return /^savepoint-\d+$/.test(roomId);
 };
 
+// 🔧 NEW: CodeRunner 룸 확인 함수 추가
+const isCodeRunnerRoom = (roomId: string): boolean => {
+  return /^coderunner-repo-\d+$/.test(roomId);
+};
+
+// 🔧 수정: CodeRunner 룸을 허용 목록에 추가
 const isAllowedRoom = (roomId: string): boolean => {
-  return isCodeEditorRoom(roomId) || isFileTreeRoom(roomId) || isSavePointRoom(roomId);
+  return (
+    isCodeEditorRoom(roomId) ||
+    isFileTreeRoom(roomId) ||
+    isSavePointRoom(roomId) ||
+    isCodeRunnerRoom(roomId)
+  );
 };
 
 const trackConnection = (clientIP: string, roomId: string): boolean => {
@@ -112,11 +123,16 @@ const handleClientConnection = (ws: ExtendedWebSocket, request: IncomingMessage)
     const clientId = generateClientId();
 
     if (roomId !== 'default' && !isAllowedRoom(roomId)) {
+      // 🔧 수정: 룸 타입 구분 개선
       const roomType = isCodeEditorRoom(roomId)
         ? '코드에디터'
         : isFileTreeRoom(roomId)
           ? '파일트리'
-          : '알수없음';
+          : isSavePointRoom(roomId)
+            ? '저장점'
+            : isCodeRunnerRoom(roomId)
+              ? '코드러너'
+              : '알수없음';
       logger.warn(`비허용 룸 연결 시도 거부: ${roomId} (타입: ${roomType}, IP: ${clientIP})`);
       ws.close(1008, 'Unauthorized room access');
       return;
@@ -156,7 +172,17 @@ const handleClientConnection = (ws: ExtendedWebSocket, request: IncomingMessage)
       ws.socket = { remoteAddress: clientIP };
     }
 
-    const roomType = isCodeEditorRoom(roomId) ? '코드에디터' : '파일트리';
+    // 🔧 수정: 룸 타입 구분 개선
+    const roomType = isCodeEditorRoom(roomId)
+      ? '코드에디터'
+      : isFileTreeRoom(roomId)
+        ? '파일트리'
+        : isSavePointRoom(roomId)
+          ? '저장점'
+          : isCodeRunnerRoom(roomId)
+            ? '코드러너'
+            : '기타';
+
     logger.connection(
       roomId,
       `새 클라이언트 연결 (ID: ${clientId}, 타입: ${roomType}, IP: ${clientIP})`,

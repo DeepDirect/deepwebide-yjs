@@ -32,7 +32,11 @@ export class RoomManager {
         ? '코드에디터'
         : SaveManager.isFileTreeRoom(roomId)
           ? '파일트리'
-          : '기타';
+          : SaveManager.isCodeRunnerRoom(roomId)
+            ? '코드러너'
+            : SaveManager.isSavePointRoom(roomId)
+              ? '저장점'
+              : '기타';
       logger.info(`새 방 생성: ${roomId} (타입: ${roomType})`);
     }
 
@@ -82,7 +86,13 @@ export class RoomManager {
       return;
     }
 
-    if (!SaveManager.isCodeEditorRoom(roomId)) {
+    if (SaveManager.isCodeRunnerRoom(roomId)) {
+      logger.info(`코드러너 룸 즉시 정리: ${roomId}`);
+      this.cleanupRoom(roomId);
+      return;
+    }
+
+    if (!SaveManager.isCodeEditorRoom(roomId) && !SaveManager.isSavePointRoom(roomId)) {
       logger.info(`알 수 없는 룸 타입 즉시 정리: ${roomId}`);
       this.cleanupRoom(roomId);
       return;
@@ -156,6 +166,7 @@ export class RoomManager {
     }
 
     // 코드 에디터 방이고 파일트리 메시지가 아닌 경우에만 YJS 처리
+    // 🔧 수정: CodeRunner 룸도 Yjs 처리에서 제외 (별도 처리)
     if (SaveManager.isCodeEditorRoom(roomId) && !isFileTreeMessage) {
       this.yjsManager.handleYjsMessage(roomId, message);
     }
@@ -267,6 +278,14 @@ export class RoomManager {
       SaveManager.isFileTreeRoom(roomId),
     ).length;
 
+    const codeRunnerRooms = Array.from(this.rooms.keys()).filter(roomId =>
+      SaveManager.isCodeRunnerRoom(roomId),
+    ).length;
+
+    const savePointRooms = Array.from(this.rooms.keys()).filter(roomId =>
+      SaveManager.isSavePointRoom(roomId),
+    ).length;
+
     return {
       totalRooms: this.rooms.size,
       totalClients: totalActiveClients,
@@ -274,11 +293,15 @@ export class RoomManager {
       memoryUsage: process.memoryUsage(),
       codeEditorRooms,
       fileTreeRooms,
+      codeRunnerRooms,
+      savePointRooms,
       gracePeriodRooms: this.gracePeriods.size,
       documentsInMemory: this.yjsManager.getDocumentList().length,
     } as ServerStatus & {
       codeEditorRooms: number;
       fileTreeRooms: number;
+      codeRunnerRooms: number;
+      savePointRooms: number;
       gracePeriodRooms: number;
       documentsInMemory: number;
     };
