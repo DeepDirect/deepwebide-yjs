@@ -1,5 +1,5 @@
 import * as Y from 'yjs';
-import logger from '../utils/logger';
+import logger from '../utils/logger.js';
 
 /**
  * Yjs 문서 내용 추출 및 관리를 담당하는 클래스

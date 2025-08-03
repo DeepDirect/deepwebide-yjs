@@ -5,6 +5,7 @@
     "moduleResolution": "Node",
     "outDir": "./dist",
     "rootDir": "./src",
+    "noEmit": false,
     "strict": true,
     "noImplicitAny": true,
     "strictNullChecks": true,

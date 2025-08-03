@@ -1,5 +1,5 @@
-import config from '../config';
-import type { LogLevel } from '../types/server.types';
+import config from '../config/index.js';
+import type { LogLevel } from '../types/server.types.js';
 
 // 로그 레벨 우선순위
 const LOG_LEVELS: Record<LogLevel, number> = {
