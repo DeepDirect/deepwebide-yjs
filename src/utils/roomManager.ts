@@ -1,7 +1,7 @@
-import type { ExtendedWebSocket, RoomInfo, ServerStatus } from '@/types/server.types';
-import logger from '@/utils/logger';
-import { SaveManager } from '@/utils/saveManager';
-import { YjsDocumentManager } from '@/utils/yjsDocumentManager';
+import type { ExtendedWebSocket, RoomInfo, ServerStatus } from '../types/server.types';
+import logger from '../utils/logger';
+import { SaveManager } from '../utils/saveManager';
+import { YjsDocumentManager } from '../utils/yjsDocumentManager';
 
 export class RoomManager {
   private rooms: Map<string, RoomInfo> = new Map();

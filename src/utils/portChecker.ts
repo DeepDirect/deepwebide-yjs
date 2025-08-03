@@ -1,5 +1,5 @@
 import { WebSocketServer } from 'ws';
-import logger from '@/utils/logger';
+import logger from '../utils/logger';
 
 /**
  * 지정된 포트가 사용 가능한지 확인

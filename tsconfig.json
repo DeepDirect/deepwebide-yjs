@@ -27,17 +27,17 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "incremental": true,
-    "baseUrl": "./src",
-    "paths": {
-      "@/*": ["*"],
-      "@/config/*": ["config/*"],
-      "@/types/*": ["types/*"],
-      "@/utils/*": ["utils/*"],
-      "@/middleware/*": ["middleware/*"]
-    },
-    "plugins": [
-      { "transform": "ts-transformer-paths" }
-    ]
+    // "baseUrl": "./src",
+    // "paths": {
+    //   "@/*": ["*"],
+    //   "@/config/*": ["config/*"],
+    //   "@/types/*": ["types/*"],
+    //   "@/utils/*": ["utils/*"],
+    //   "@/middleware/*": ["middleware/*"]
+    // },
+    // "plugins": [
+    //   { "transform": "ts-transformer-paths" }
+    // ]
   },
   "include": [
     "src/**/*"

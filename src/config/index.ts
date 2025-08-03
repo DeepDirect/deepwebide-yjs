@@ -1,4 +1,4 @@
-import type { ServerConfig } from '@/types/server.types';
+import type { ServerConfig } from '../types/server.types';
 
 // 환경변수에서 설정 로드
 const loadConfig = (): ServerConfig => {

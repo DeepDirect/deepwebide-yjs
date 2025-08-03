@@ -1,4 +1,4 @@
-import logger from '@/utils/logger';
+import logger from '../utils/logger';
 
 /**
  * 룸 ID에서 repositoryId와 filePath 추출

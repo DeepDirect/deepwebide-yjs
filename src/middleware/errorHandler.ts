@@ -1,4 +1,4 @@
-import logger from '@/utils/logger';
+import logger from '../utils/logger';
 
 /**
  * 전역 에러 핸들러 설정

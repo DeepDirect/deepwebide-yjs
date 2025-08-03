@@ -1,11 +1,11 @@
 import 'dotenv/config';
 import { WebSocketServer } from 'ws';
 import { IncomingMessage } from 'http';
-import config, { getConfigSummary } from 'config';
-import logger from '@/utils/logger';
-import { checkPort } from '@/utils/portChecker';
-import { RoomManager } from '@/utils/roomManager';
-import type { ExtendedWebSocket, ServerError } from '@/types/server.types';
+import config, { getConfigSummary } from '../src/config';
+import logger from '../src/utils/logger';
+import { checkPort } from '../src/utils/portChecker';
+import { RoomManager } from '../src/utils/roomManager';
+import type { ExtendedWebSocket, ServerError } from '../src/types/server.types';
 
 const roomManager = new RoomManager();
 const connectionTracker = new Map<string, Map<string, number>>();
