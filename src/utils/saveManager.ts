@@ -123,12 +123,29 @@ export class SaveManager {
     return isNaN(repositoryId) ? null : repositoryId;
   }
 
-  // 🔧 추가: 지원되는 룸인지 확인
+  // 🔧 NEW: CodeRunner 룸인지 확인 (추가)
+  static isCodeRunnerRoom(roomId: string): boolean {
+    // "coderunner-repo-{숫자}" 패턴 확인
+    const pattern = /^coderunner-repo-\d+$/;
+    return pattern.test(roomId);
+  }
+
+  // 🔧 NEW: CodeRunner 룸에서 repositoryId 추출 (추가)
+  static parseCodeRunnerRoomId(roomId: string): number | null {
+    const match = roomId.match(/^coderunner-repo-(\d+)$/);
+    if (!match) return null;
+
+    const repositoryId = parseInt(match[1], 10);
+    return isNaN(repositoryId) ? null : repositoryId;
+  }
+
+  // 🔧 수정: 지원되는 룸인지 확인 (CodeRunner 룸 추가)
   static isSupportedRoom(roomId: string): boolean {
     return (
       SaveManager.isCodeEditorRoom(roomId) ||
       SaveManager.isFileTreeRoom(roomId) ||
-      SaveManager.isSavePointRoom(roomId)
+      SaveManager.isSavePointRoom(roomId) ||
+      SaveManager.isCodeRunnerRoom(roomId)
     );
   }
 
